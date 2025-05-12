@@ -22,7 +22,7 @@
   
 
 <title>
-  发表一篇文章 | 听雨轩
+  若依分页问题 | 听雨轩
 </title>
 <meta
   name="description"
@@ -110,12 +110,12 @@
 
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="发表一篇文章 | 听雨轩" />
+  <meta property="og:title" content="若依分页问题 | 听雨轩" />
   <meta
     property="og:description"
     content="少女祈祷中..."
   />
-  <meta property="og:url" content="https://tingyuxuan486.github.io/post/index02/" />
+  <meta property="og:url" content="https://tingyuxuan486.github.io/post/index11/" />
   <meta
     property="og:site_name"
     content="听雨轩的小站"
@@ -125,8 +125,8 @@
     content="/"
   />
   <meta property="article:author" content="听雨轩" />
-  <meta property="article:published_time" content="2025-03-27T13:23:18&#43;08:00" />
-  <meta property="article:modified_time" content="2025-03-27T13:23:18&#43;08:00" />
+  <meta property="article:published_time" content="2025-03-27T12:45:52&#43;08:00" />
+  <meta property="article:modified_time" content="2025-03-27T12:45:52&#43;08:00" />
   
   
   <meta name="twitter:card" content="summary" />
@@ -329,7 +329,7 @@
           
         </picture>
         
-          <img fetchpriority="high" src="/images/banner.webp" alt="发表一篇文章">
+          <img fetchpriority="high" src="/images/banner.webp" alt="若依分页问题">
         
       
     
@@ -345,7 +345,7 @@
   
         
           <a href="/" id="logo">
-            <h1 data-aos="slide-up">发表一篇文章</h1>
+            <h1 data-aos="slide-up">若依分页问题</h1>
           </a>
         
       
@@ -520,7 +520,7 @@
     class="article-date-link"
     data-aos="zoom-in"
   >
-    <time datetime="2025-03-27 13:23:18 &#43;0800 CST" itemprop="datePublished"
+    <time datetime="2025-03-27 12:45:52 &#43;0800 CST" itemprop="datePublished"
       >2025-03-27</time
     >
     <time style="display: none;" id="post-update-time"
@@ -539,14 +539,68 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
       
-        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">hugo new content/post/index02.md 
-</span></span><span class="line"><span class="cl">hugo server -D  *先启动看看效果*
-</span></span><span class="line"><span class="cl">hugo -D
-</span></span></code></pre></div><p>public目录下</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">git add .
-</span></span><span class="line"><span class="cl">git commit -m &#34;第三次提交&#34;
-</span></span><span class="line"><span class="cl">git push -f origin main  
-</span></span></code></pre></div>
+        <h1 id="若依分页问题">
+<a class="header-anchor" href="#%e8%8b%a5%e4%be%9d%e5%88%86%e9%a1%b5%e9%97%ae%e9%a2%98"></a>
+若依分页问题
+</h1><p>1、必须要在查询列表的业务前加startPage();</p>
+<p>2、如果多次查询或者查询需要做筛选导致出现两个list（其中第二个list会丢掉分页信息）</p>
+<p>3、如果先分页，再过滤会导致可能某一页出现实际pagesize少于需要显示的pagesize</p>
+<p>第一种（如果是需要先查询所有的，然后过滤掉一部分，再拿到分页信息）</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@PreAuthorize</span><span class="p">(</span><span class="s">&#34;@ss.hasPermi(&#39;system:achievement:list&#39;)&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@GetMapping</span><span class="p">(</span><span class="s">&#34;/list&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">TableDataInfo</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">NekndResearchAchievement</span><span class="w"> </span><span class="n">nekndResearchAchievement</span><span class="p">,</span><span class="nd">@RequestParam</span><span class="p">(</span><span class="n">required</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">)</span><span class="w"> </span><span class="n">Integer</span><span class="w"> </span><span class="n">pageNum</span><span class="p">,</span><span class="w"> </span><span class="nd">@RequestParam</span><span class="p">(</span><span class="n">required</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">)</span><span class="w"> </span><span class="n">Integer</span><span class="w"> </span><span class="n">pageSize</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">NekndResearchAchievement</span><span class="o">&gt;</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nekndResearchAchievementService</span><span class="p">.</span><span class="na">selectNekndResearchAchievementList</span><span class="p">(</span><span class="n">nekndResearchAchievement</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">//如果是教育端，则只显示当前部门且已审核的</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">List</span><span class="o">&lt;</span><span class="n">NekndResearchAchievement</span><span class="o">&gt;</span><span class="w"> </span><span class="n">achievementList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="na">stream</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">item</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="na">getDeptId</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Integer</span><span class="p">.</span><span class="na">parseInt</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="na">getDeptId</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="p">.</span><span class="na">collect</span><span class="p">(</span><span class="n">Collectors</span><span class="p">.</span><span class="na">toList</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">//自定义的分页工具</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">CustomPageUtils</span><span class="p">.</span><span class="na">paginateList</span><span class="p">(</span><span class="n">achievementList</span><span class="p">,</span><span class="w"> </span><span class="n">pageNum</span><span class="p">,</span><span class="w"> </span><span class="n">pageSize</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CustomPageUtils</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 对给定的列表进行分页处理。
+</span></span></span><span class="line"><span class="cl"><span class="cm">     *
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param &lt;T&gt; 列表元素的类型
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param list    要分页的原始列表
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param pageNum 页码，从1开始
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param pageSize 每页显示的记录数
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @return 包含分页后数据和总记录数的TableDataInfo对象
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">TableDataInfo</span><span class="w"> </span><span class="nf">paginateList</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="w"> </span><span class="n">pageNum</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="w"> </span><span class="n">pageSize</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">list</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TableDataInfo</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">(),</span><span class="w"> </span><span class="n">0</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">setCode</span><span class="p">(</span><span class="n">HttpStatus</span><span class="p">.</span><span class="na">SUCCESS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">setMsg</span><span class="p">(</span><span class="s">&#34;获取列表数据成功！&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">};</span><span class="w"> </span><span class="c1">// 如果没有数据，则返回一个空的TableDataInfo对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TableDataInfo</span><span class="w"> </span><span class="n">rspData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pageNum</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">pageSize</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">rspData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TableDataInfo</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="na">size</span><span class="p">());</span><span class="w"> </span><span class="c1">// 如果页码或每页显示的记录数没有传入，则返回原始列表和总记录数</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">rspData</span><span class="p">.</span><span class="na">setCode</span><span class="p">(</span><span class="n">HttpStatus</span><span class="p">.</span><span class="na">SUCCESS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">rspData</span><span class="p">.</span><span class="na">setMsg</span><span class="p">(</span><span class="s">&#34;获取全部列表数据成功！&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">rspData</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="na">size</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">pageStart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">pageNum</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pageSize</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">pageEnd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="na">min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">pageNum</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pageSize</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">paginatedList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">pageEnd</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pageStart</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pageStart</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">paginatedList</span><span class="p">.</span><span class="na">addAll</span><span class="p">(</span><span class="n">list</span><span class="p">.</span><span class="na">subList</span><span class="p">(</span><span class="n">pageStart</span><span class="p">,</span><span class="w"> </span><span class="n">pageEnd</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">rspData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TableDataInfo</span><span class="p">(</span><span class="n">paginatedList</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span><span class="c1">// 返回分页后的列表和总记录数</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">rspData</span><span class="p">.</span><span class="na">setCode</span><span class="p">(</span><span class="n">HttpStatus</span><span class="p">.</span><span class="na">SUCCESS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">rspData</span><span class="p">.</span><span class="na">setMsg</span><span class="p">(</span><span class="s">&#34;获取列表数据成功！&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">rspData</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><img src="/picture/%E8%BF%81%E7%A7%BB%E5%B9%B3%E5%8F%B0%E6%97%B6%E5%A4%8D%E5%88%B6%E8%A1%A8%E6%95%B0%E6%8D%AE.png" alt="迁移平台时复制表数据"></p>
+
       
     </div>
     <footer class="article-footer">
@@ -585,16 +639,16 @@
             <img
               data-src="https://d-sketon.top/img/_backwebp/bg1.webp"
               data-sizes="auto"
-              alt="若依分页问题"
+              alt="Hello World"
               class="lazyload"
             />
           
         
-        <a href="https://tingyuxuan486.github.io/post/index1/index01/"></a>
+        <a href="https://tingyuxuan486.github.io/post/hello/"></a>
         <div class="article-nav-caption">前一篇</div>
         <h3 class="article-nav-title">
           
-            若依分页问题
+            Hello World
           
         </h3>
       </div>
@@ -608,16 +662,16 @@
             <img
               data-src="https://d-sketon.top/img/_backwebp/bg1.webp"
               data-sizes="auto"
-              alt="Idea的使用"
+              alt="若依分页问题"
               class="lazyload"
             />
           
         
-        <a href="https://tingyuxuan486.github.io/post/index03271410/"></a>
+        <a href="https://tingyuxuan486.github.io/post/index1/index01/"></a>
         <div class="article-nav-caption">后一篇</div>
         <h3 class="article-nav-title">
           
-            Idea的使用
+            若依分页问题
           
         </h3>
       </div>
@@ -1004,9 +1058,9 @@
       <script data-pjax>
         window.REIMU_POST = {
           author: "听雨轩",
-          title: "发表一篇文章",
-          url: "https:\/\/tingyuxuan486.github.io\/post\/index02\/",
-          description: "hugo new content\/post\/index02.md hugo server -D *先启动看看效果* hugo -D public目录下\ngit add . git commit -m \u0026#34;第三次提交\u0026#34; git push -f origin main ",
+          title: "若依分页问题",
+          url: "https:\/\/tingyuxuan486.github.io\/post\/index11\/",
+          description: " 若依分页问题 1、必须要在查询列表的业务前加startPage();\n2、如果多次查询或者查询需要做筛选导致出现两个list（其中第二个list会丢掉分页信息）\n3、如果先分页，再过滤会导致可能某一页出现实际pagesize少于需要显示的pagesize\n第一种（如果是需要先查询所有的，然后过滤掉一部分，再拿到分页信息）\n@PreAuthorize(\u0026#34;@ss.hasPermi(\u0026#39;system:achievement:list\u0026#39;)\u0026#34;) @GetMapping(\u0026#34;\/list\u0026#34;) public TableDataInfo …",
           cover: "https:\/\/tingyuxuan486.github.io\/images\/banner.webp",
         };
       </script>
